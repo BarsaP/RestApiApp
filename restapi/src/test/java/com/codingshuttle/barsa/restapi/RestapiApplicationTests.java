@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -33,10 +34,14 @@ public class RestapiApplicationTests {
 	
 	@BeforeEach
     public void setUp() {
-		baseUrl = baseUrl.concat(":").concat(port+"").concat("/products");
+		h2Repository.deleteAll();
+		baseUrl = baseUrl.concat(":").concat(port+"").concat("/api/products");
 	}
 	
+	@Test
 	public void testAddProduct() {
+		int initialCount = h2Repository.findAll().size();
+		
 		Product product = new Product("headset", 2.0, 7999);
 		Product response = restTemplate.postForObject(baseUrl, product,Product.class);
 		assertEquals("headset", response.getName());
